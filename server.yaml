@@ -14,6 +14,9 @@ spec:
       labels:
         app.kubernetes.io/name: server
     spec:
+      os:
+        name: linux
+      terminationGracePeriodSeconds: 60
       containers:
         - name: server
           image: server:v1
@@ -25,6 +28,11 @@ spec:
           env:
             - name: REDIS_ADDR
               value: redis-master.redis.svc.cluster.local:6379
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "echo Running preStop hook"]
+            stopSignal: SIGTERM
           readinessProbe:
             httpGet:
               path: /
