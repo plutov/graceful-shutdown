@@ -28,16 +28,16 @@ var (
 )
 
 func main() {
-	cache = redis.NewClient(&redis.Options{
-		Addr: os.Getenv("REDIS_ADDR"),
-	})
-
 	signalCtx, signalCtxStop := signal.NotifyContext(context.Background(),
 		syscall.SIGINT,  // Ctrl+C
 		syscall.SIGQUIT, // Ctrl+\
 		syscall.SIGTERM, // the normal way to politely ask a program to terminate
 	)
 	defer signalCtxStop()
+
+	cache = redis.NewClient(&redis.Options{
+		Addr: os.Getenv("REDIS_ADDR"),
+	})
 
 	// readiness check
 	http.HandleFunc("/", ready)
